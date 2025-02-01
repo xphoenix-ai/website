@@ -1,4 +1,21 @@
-# System files
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
 .DS_Store
 Thumbs.db
 
@@ -9,11 +26,9 @@ Thumbs.db
 *.sublime-workspace
 
 # Dependency directories
-node_modules/
 vendor/
 
 # Environment files
-.env
 .env.local
 .env.*.local
 

@@ -313,20 +313,23 @@
                   <div class="col-md-6">
                      <form id="request" class="main_form">
                         <div class="row">
-                           <div class="col-md-12 ">
-                              <input class="contactus" placeholder="Name" type="type" name="Name"> 
+                           <div class="col-md-12">
+                              <input class="contactus" placeholder="Name" type="text" name="Name" required> 
                            </div>
                            <div class="col-md-12">
-                              <input class="contactus" placeholder="Email" type="type" name="Email"> 
+                              <input class="contactus" placeholder="Email" type="email" name="Email" required> 
                            </div>
                            <div class="col-md-12">
-                              <input class="contactus" placeholder="Phone Number" type="type" name="Phone Number">                          
+                              <input class="contactus" placeholder="Phone Number" type="tel" name="Phone" required>                          
                            </div>
                            <div class="col-md-12">
-                              <input class="contactusmess" placeholder="Message" type="type" Message="Name">
+                              <textarea class="contactusmess" placeholder="Message" name="Message" required></textarea>
                            </div>
                            <div class="col-md-12">
-                              <button class="send_btn">Send</button>
+                              <button type="submit" class="send_btn">Send</button>
+                           </div>
+                           <div class="col-md-12">
+                              <div id="form-message" class="alert" style="display: none;"></div>
                            </div>
                            <div class="col-md-12">
                               <ul class="location_form">
@@ -444,6 +447,51 @@
       <!-- google map js -->
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8eaHt9Dh5H57Zh0xVTqxVdBFCvFMqFjQ&callback=initMap"></script>
       <!-- end google map js --> 
+      
+      <!-- Form submission script -->
+      <script>
+        document.getElementById('request').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formMessage = document.getElementById('form-message');
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            // Disable submit button during submission
+            submitButton.disabled = true;
+            
+            try {
+                // Collect form data
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Send form data using fetch
+                const response = await fetch('http://localhost:3000/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                formMessage.style.display = 'block';
+                formMessage.className = 'alert alert-' + (result.status === 'success' ? 'success' : 'danger');
+                formMessage.textContent = result.message;
+                
+                if (result.status === 'success') {
+                    form.reset();
+                }
+            } catch (error) {
+                formMessage.style.display = 'block';
+                formMessage.className = 'alert alert-danger';
+                formMessage.textContent = 'An error occurred. Please try again later.';
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+      </script>
    </body>
 </html>
 
